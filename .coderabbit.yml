@@ -1,0 +1,162 @@
+# .coderabbit.yaml
+# CodeRabbit configuration for Terraform Module repositories
+
+language: en-US
+
+tone_instructions: |
+  Be concise and direct. Focus on Terraform best practices, security, 
+  and module design patterns. Flag breaking changes prominently.
+
+early_access: true
+
+enable_free_tier: true
+
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  high_level_summary_placeholder: "@coderabbitai summary"
+  auto_title_placeholder: "@coderabbitai"
+  review_status: true
+  collapse_walkthrough: false
+  changed_files_summary: true
+  sequence_diagrams: false
+  assess_linked_issues: true
+  poem: false
+  
+  path_instructions:
+    - path: "**/*.tf"
+      instructions: |
+        Review Terraform code for:
+        - Resource naming conventions (use underscores, descriptive names)
+        - Required provider version constraints
+        - Variable and output descriptions are present
+        - Sensitive variables are marked as sensitive = true
+        - Default values are appropriate
+        - Resource dependencies are explicit where needed
+        - No hardcoded values that should be variables
+        - Proper use of locals for repeated expressions
+        - Count/for_each usage is appropriate
+        - Lifecycle rules are used correctly
+        - Tags are consistently applied to resources
+
+    - path: "variables.tf"
+      instructions: |
+        Review variables for:
+        - All variables have descriptions
+        - All variables have appropriate types defined
+        - Validation blocks for constrained inputs
+        - Sensitive variables marked correctly
+        - Default values are sensible or omitted for required vars
+        - Variable names follow conventions (snake_case)
+        - No unused variables
+
+    - path: "outputs.tf"
+      instructions: |
+        Review outputs for:
+        - All outputs have descriptions
+        - Sensitive outputs are marked sensitive = true
+        - Output names are descriptive and follow conventions
+        - All useful resource attributes are exposed
+        - No sensitive data accidentally exposed
+
+    - path: "versions.tf"
+      instructions: |
+        Review version constraints for:
+        - Terraform version constraint is present and reasonable
+        - Provider version constraints use pessimistic (~>) or >= operators
+        - No overly restrictive version pinning unless justified
+        - Required providers block is complete
+
+    - path: "main.tf"
+      instructions: |
+        Review main configuration for:
+        - Logical resource organization
+        - Proper use of depends_on only when necessary
+        - No circular dependencies
+        - Resource naming consistency
+        - Appropriate use of data sources vs resources
+
+    - path: "locals.tf"
+      instructions: |
+        Review locals for:
+        - DRY principle - repeated expressions consolidated
+        - Clear naming that indicates purpose
+        - No overly complex expressions (break into multiple locals)
+        - Proper use for computed values
+
+    - path: "modules/**/*.tf"
+      instructions: |
+        Review submodules for:
+        - Clear single responsibility
+        - Minimal required variables
+        - Comprehensive outputs
+        - Proper documentation
+        - No tight coupling to parent module
+
+    - path: "examples/**/*.tf"
+      instructions: |
+        Review examples for:
+        - Working, realistic usage examples
+        - Cover common use cases
+        - Include comments explaining the example
+        - Use realistic but safe default values
+        - Should be directly runnable (terraform init/plan)
+
+    - path: "**/*.md"
+      instructions: |
+        Review documentation for:
+        - README.md includes module description, usage, inputs, outputs
+        - Examples are accurate and up-to-date
+        - terraform-docs markers present if auto-generating
+        - Requirements and prerequisites documented
+        - Any breaking changes clearly documented
+
+    - path: "*.tfvars"
+      instructions: |
+        Flag any .tfvars files - these typically should not be committed 
+        to module repositories. Suggest using .tfvars.example instead.
+
+    - path: "**/.terraform/**"
+      instructions: |
+        Flag .terraform directories - these should never be committed.
+        Ensure .gitignore includes .terraform/
+
+    - path: "*.tfstate*"
+      instructions: |
+        CRITICAL: Flag any state files immediately. These should NEVER 
+        be committed to version control. Contains sensitive data.
+
+  path_filters:
+    - "!**/.terraform/**"
+    - "!**/*.tfstate*"
+    - "!**/.terraform.lock.hcl"
+
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT MERGE"
+      - "DRAFT"
+    drafts: false
+    base_branches:
+      - main
+      - master
+      - develop
+
+chat:
+  auto_reply: true
+
+knowledge_base:
+  opt_out: false
+  learnings:
+    scope: auto
+  issues:
+    scope: auto
+  jira:
+    project_keys: []
+  linear:
+    team_keys: []
+  pull_requests:
+    scope: auto
