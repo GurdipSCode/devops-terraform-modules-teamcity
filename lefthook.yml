@@ -1,1 +1,25 @@
-ddfd
+min_version: 1.10.0
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: OpenTofu formatting
+      glob: "*.{tf,tfvars}"
+      run: tofu fmt -check -diff {staged_files}
+
+pre-push:
+  jobs:
+    - name: OpenTofu module validation
+      run: |
+        tofu init \
+          -backend=false \
+          -input=false \
+          -lockfile=readonly
+
+        tofu validate -no-color
+
+    - name: OpenTofu tests
+      run: |
+        if [ -d "tests" ]; then
+          tofu test -no-color
+        fi
